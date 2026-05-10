@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abnormal | ABNORMAL 官方網站</title>
+    <!-- 引入 Tailwind CSS 進行快速且現代的排版 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Google Fonts: Noto Sans TC 確保中文顯示優雅 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        /* 自訂反轉特效 */
+        .hover-invert {
+            transition: all 0.3s ease-in-out;
+        }
+
+        .hover-invert:hover {
+            background-color: #000;
+            color: #fff;
+        }
+
+        /* 強制圖片轉為黑白，增強對比度以符合主題 */
+        .img-bw {
+            filter: grayscale(100%) contrast(1.1);
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .product-card:hover .img-bw {
+            transform: scale(1.1) rotate(3deg);
+            filter: grayscale(100%) invert(100%) contrast(1.5);
+        }
+
+        /* 雜訊/故障特效 (Glitch) */
+        .glitch {
+            position: relative;
+            display: inline-block;
+            z-index: 1;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            color: inherit;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .glitch::before {
+            left: 3px;
+            text-shadow: -2px 0 #00e5ff, 2px 2px #000;
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+            z-index: -1;
+        }
+
+        .glitch::after {
+            left: -3px;
+            text-shadow: 2px 0 #ff00c1, -2px -2px #fff;
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+            z-index: -2;
+        }
+
+        @keyframes glitch-anim {
+            0% {
+                clip: rect(10px, 9999px, 44px, 0);
+                transform: skew(0.5deg);
+            }
+
+            100% {
+                clip: rect(70px, 9999px, 85px, 0);
+                transform: skew(-0.5deg);
+            }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% {
+                clip: rect(20px, 9999px, 34px, 0);
+                transform: skew(-0.5deg);
+            }
+
+            100% {
+                clip: rect(60px, 9999px, 75px, 0);
+                transform: skew(0.5deg);
+            }
+        }
+
+        /* 跑馬燈 */
+        .marquee-wrapper {
+            position: absolute;
+            top: 50%;
+            left: -5%;
+            width: 110vw;
+            transform: translateY(-50%) rotate(-6deg) scale(1.1);
+            background: #000;
+            color: #fff;
+            padding: 1.5rem 0;
+            z-index: 0;
+            overflow: hidden;
+            white-space: nowrap;
+            border-top: 4px solid white;
+            border-bottom: 4px solid white;
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 3s linear infinite;
+            font-weight: 900;
+            font-size: 2.5rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* 針對帶有透明背景霓虹燈 LOGO 的特效優化 */
+        .neon-logo-img {
+            /* 使用 drop-shadow 而非 box-shadow，光暈會貼合圖片形狀 */
+            filter: drop-shadow(0 0 15px rgba(103, 232, 249, 0.8)) drop-shadow(0 0 30px rgba(103, 232, 249, 0.4));
+            animation: neon-pulse 2s infinite alternate;
+            transition: transform 0.3s ease;
+        }
+
+        @keyframes neon-pulse {
+            0% {
+                filter: drop-shadow(0 0 10px rgba(103, 232, 249, 0.6)) drop-shadow(0 0 20px rgba(103, 232, 249, 0.2));
+                opacity: 0.95;
+            }
+
+            100% {
+                filter: drop-shadow(0 0 25px rgba(103, 232, 249, 0.9)) drop-shadow(0 0 45px rgba(103, 232, 249, 0.5));
+                opacity: 1;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #000;
+        }
+    </style>
+</head>
+
+<body class="bg-white text-black antialiased">
+
+    <!-- 導覽列 (Navbar) -->
+    <nav class="fixed w-full bg-white/90 backdrop-blur-md z-50 border-b border-black">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- 品牌 Logo -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer gap-3" onclick="window.scrollTo(0,0)">
+                    <img src="images/logo1.png" alt="Abnormal Logo" class="w-14 h-14 object-contain neon-logo-img">
+                    <span class="text-3xl font-black tracking-widest glitch hidden md:inline-block"
+                        data-text="ABNORMAL">ABNORMAL</span>
+                </div>
+                <!-- 桌面版選單 -->
+                <div class="hidden md:flex space-x-12">
+                    <a href="#about"
+                        class="text-sm font-bold tracking-widest hover:underline underline-offset-8">關於品牌</a>
+                    <a href="#products"
+                        class="text-sm font-bold tracking-widest hover:underline underline-offset-8">產品系列</a>
+                    <a href="https://www.instagram.com/abnormal_team_?igsh=bmd0dGFwOGM2dzJ3" target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-sm font-bold tracking-widest hover:underline underline-offset-8">聯絡我們</a>
+                </div>
+                <div class="hidden md:flex items-center">
+                    </button>
+                </div>
+                <!-- 手機版選單按鈕 -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-black focus:outline-none">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- 手機版下拉選單 -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-black">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 text-center">
+                <a href="#about"
+                    class="block px-3 py-4 text-base font-bold tracking-widest border-b border-black uppercase">關於異常</a>
+                <a href="#products"
+                    class="block px-3 py-4 text-base font-bold tracking-widest border-b border-black uppercase">異常品項</a>
+                <a href="#contact" class="block px-3 py-4 text-base font-bold tracking-widest uppercase">注入代碼</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 首頁主視覺 (Hero Section) -->
+    <section class="pt-20 min-h-screen flex items-center justify-center bg-white relative overflow-hidden">
+        <!-- 背景裝飾 -->
+        <div
+            class="absolute -right-20 -top-20 w-[600px] h-[600px] bg-cyan-400 rounded-full opacity-5 blur-3xl animate-pulse">
+        </div>
+
+        <!-- 跑馬燈背景 -->
+        <div class="marquee-wrapper">
+            <div class="marquee-content">
+                WE ARE ABNORMAL // LIVE LIFE IN A WILD DAY! // BREAK THE RULES // WE ARE ABNORMAL // LIVE LIFE IN A WILD
+                DAY! // BREAK
+                THE RULES //
+            </div>
+        </div>
+
+        <div
+            class="text-center z-10 px-6 bg-black/95 backdrop-blur-md p-10 md:p-16 border-8 border-white transform rotate-1 hover:rotate-0 transition-transform shadow-[15px_15px_0px_0px_rgba(0,229,255,0.4)] flex flex-col items-center">
+
+            <!-- 巨大霓虹 Logo (使用新上傳的 logo.png) -->
+            <div class="mb-10 transform -rotate-6 hover:rotate-6 transition-all duration-500 hover:scale-110">
+                <img src="images/logo2.png" alt="Abnormal Neon Logo"
+                    class="w-56 h-56 md:w-80 md:h-80 object-contain neon-logo-img">
+            </div>
+
+            <h1 class="text-6xl md:text-8xl lg:text-9xl font-black mb-6 tracking-tighter text-white glitch"
+                data-text="ABNORMAL">
+                ABNORMAL
+            </h1>
+            <p
+                class="text-lg md:text-2xl font-bold mb-12 tracking-widest text-black bg-white inline-block px-6 py-2 transform -rotate-2">
+                LIVE LIFE IN A WILD DAY!
+            </p>
+            <br>
+            <a href="#products"
+                class="inline-block border-4 border-white bg-black text-white font-black text-xl tracking-widest px-12 py-5 hover:bg-cyan-400 hover:text-black transition-all transform hover:scale-110 hover:-rotate-3 shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] hover:shadow-none active:translate-y-2 active:translate-x-2">
+                加入異常
+            </a>
+        </div>
+    </section>
+
+    <!-- 關於品牌 (About Section) -->
+    <section id="about" class="py-24 bg-black text-white relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none"
+            style="background-image: radial-gradient(circle, #00e5ff 1px, transparent 1px); background-size: 30px 30px;">
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-4xl md:text-6xl font-black mb-8 tracking-widest glitch" data-text="關於我們">關於我們
+                    </h2>
+                    <div class="w-32 h-3 bg-cyan-400 mb-8 transform -skew-x-12"></div>
+                    <p class="text-xl leading-relaxed font-bold mb-6 text-white border-l-8 border-cyan-400 pl-6">
+                        「ABNORMAL」2025年心血來潮建立。
+                    </p>
+                    <p class="text-lg leading-relaxed font-light text-gray-300 mb-6">
+                        宏高嘅目標，卓越嘅後勤團隊，龐大嘅商業價值，唔好意思，我哋暫時係一個都冇，淨係得三個靚仔。我哋秉承住「認真嘢鳩做，鳩嘢認真做」嘅理念，希望為大家帶嚟一啲唔多正常但同時高質嘅設計同產品，亦歡迎頭腦鳩kick嘅各位投稿心水設計同給予意見，但係都係嗰句，你講完，我未必聽，意見接受，態度照舊，呢啲睇心情啦。
+                    </p>
+                    <p
+                        class="text-xl leading-relaxed font-black text-black bg-cyan-400 inline-block px-3 py-1 transform rotate-1">
+                        活得瘋狂
+                    </p>
+                </div>
+                <div
+                    class="relative h-[500px] overflow-hidden border-8 border-white transform rotate-3 hover:-rotate-3 transition-transform duration-500 shadow-[15px_15px_0px_0px_rgba(0,229,255,0.2)]">
+                    <img src="images/3pepole 2.png" alt=""
+                        class="object-cover w-full h-full img-bw filter contrast-125">x
+
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+
+    <!-- 產品系列 (Products Section) -->
+    <section id="products" class="py-24 bg-white relative">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl md:text-7xl font-black mb-4 tracking-widest glitch" data-text="異常品項">異常品項</h2>
+                <p
+                    class="text-white font-bold tracking-widest bg-black inline-block px-6 py-2 transform -rotate-1 uppercase border-2 border-cyan-400 border-dashed">
+                    Hover to Switch View</p>
+            </div>
+
+            <!-- 產品網格 -->
+            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+                <!-- 產品 1 -->
+                <div
+                    class="product-card group cursor-pointer border-4 border-black p-2 bg-gray-100 hover:bg-black transition-colors">
+                    <div class="img-container mb-4 border-2 border-black aspect-square"
+                        onclick="this.classList.toggle('is-flipped')">
+                        <img src="images/《NBA系列》Curry食爆谷.jpg" alt="Watch 1"
+                            class="product-img img-primary object-cover w-full h-full">
+                        <img src="images/單正面.jpg" alt="Watch 2"
+                            class="product-img img-secondary object-cover w-full h-full">
+                    </div>
+                    <div class="flex justify-between items-center group-hover:text-white px-2">
+                        <h3 class="text-xl font-black tracking-wide">《NBA系列》Curry食爆谷 </h3>
+                        <span class="text-lg font-bold border-b-2 border-current">HK$ 139</span>
+                    </div>
+                </div>
+                <!-- 產品 2 -->
+                <div
+                    class="product-card group cursor-pointer border-4 border-black p-2 bg-gray-100 hover:bg-black transition-colors">
+                    <div class="img-container mb-4 border-2 border-black aspect-square">
+                        <img src="images/《香港MEME系列》咪逗啦.jpg" alt="Bag 1"
+                            class="product-img img-primary object-cover w-full h-full">
+                        <img src="images/單正面.jpg" alt="Bag 2"
+                            class="product-img img-secondary object-cover w-full h-full">
+                    </div>
+                    <div class="flex justify-between items-center group-hover:text-white px-2">
+                        <h3 class="text-xl font-black tracking-wide">《香港MEME系列》咪逗啦</h3>
+                        <span class="text-lg font-bold border-b-2 border-current">HK$ 139</span>
+                    </div>
+                </div>
+                <!-- 產品 3 -->
+                <div
+                    class="product-card group cursor-pointer border-4 border-black p-2 bg-gray-100 hover:bg-black transition-colors">
+                    <div class="img-container mb-4 border-2 border-black aspect-square">
+                        <img src="images/《香港MEME系列》烏鴉哥.jpg" alt="Notebook 1"
+                            class="product-img img-primary object-cover w-full h-full">
+                        <img src="images/單正面.jpg" alt="Notebook 2"
+                            class="product-img img-secondary object-cover w-full h-full">
+                    </div>
+                    <div class="flex justify-between items-center group-hover:text-white px-2">
+                        <h3 class="text-xl font-black tracking-wide">《香港MEME系列》烏鴉哥</h3>
+                        <span class="text-lg font-bold border-b-2 border-current">HK$ 139</span>
+                    </div>
+                </div>
+
+                <!-- 隱藏產品 -->
+                <div
+                    class="hidden-product product-card hidden group cursor-pointer border-4 border-black p-2 bg-gray-100 hover:bg-black transition-colors">
+                    <div class="img-container mb-4 border-2 border-black aspect-square">
+                        <img src="images/《NBA系列》Morant打劫.jpg" alt="Hoodie 1"
+                            class="product-img img-primary object-cover w-full h-full">
+                        <img src="images/單正面.jpg" alt="Hoodie 2"
+                            class="product-img img-secondary object-cover w-full h-full">
+                    </div>
+                    <div class="flex justify-between items-center group-hover:text-white px-2">
+                        <h3 class="text-xl font-black tracking-wide">《NBA系列》Morant打劫</h3>
+                        <span class="text-lg font-bold border-b-2 border-current">HK$ 139</span>
+                    </div>
+                </div>
+                <div
+                    class="hidden-product product-card hidden group cursor-pointer border-4 border-black p-2 bg-gray-100 hover:bg-black transition-colors">
+                    <div class="img-container mb-4 border-2 border-black aspect-square">
+                        <img src="images/《NBA系列》Jokic騎師.jpg" alt="Shoes 1"
+                            class="product-img img-primary object-cover w-full h-full">
+                        <img src="images/單正面.jpg" alt="Shoes 2"
+                            class="product-img img-secondary object-cover w-full h-full">
+                    </div>
+                    <div class="flex justify-between items-center group-hover:text-white px-2">
+                        <h3 class="text-xl font-black tracking-wide">《NBA系列》Jokic騎師</h3>
+                        <span class="text-lg font-bold border-b-2 border-current">HK$ 139</span>
+                    </div>
+                </div>
+                <div
+                    class="hidden-product product-card hidden group cursor-pointer border-4 border-black p-2 bg-gray-100 hover:bg-black transition-colors">
+                    <div class="img-container mb-4 border-2 border-black aspect-square">
+                        <img src="images/《NBA系列》Lebron上粉.jpg" alt="Goggles 1"
+                            class="product-img img-primary object-cover w-full h-full">
+                        <img src="images/單正面.jpg" alt="Goggles 2"
+                            class="product-img img-secondary object-cover w-full h-full">
+                    </div>
+                    <div class="flex justify-between items-center group-hover:text-white px-2">
+                        <h3 class="text-xl font-black tracking-wide">《NBA系列》Lebron上粉</h3>
+                        <span class="text-lg font-bold border-b-2 border-current">HK$ 139</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="load-more-container" class="text-center mt-20">
+                <button id="load-more-btn"
+                    class="border-4 border-black text-black font-black tracking-widest px-12 py-5 hover:bg-black hover:text-white transform hover:scale-110 transition-all shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-none active:translate-y-2 active:translate-x-2 uppercase text-xl">
+                    發掘更多異常
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁尾 (Footer) -->
+    <footer class="bg-black text-white py-16 border-t-[16px] border-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-8 md:mb-0 transform hover:scale-110 transition-transform flex items-center gap-4">
+                <img src="images/logo1.png" alt="Abnormal Logo" class="w-16 h-16 object-contain neon-logo-img">
+                <span class="text-4xl font-black tracking-widest glitch" data-text="ABNORMAL">ABNORMAL</span>
+            </div>
+            <div class="flex space-x-8 mb-8 md:mb-0 font-bold tracking-widest uppercase">
+                <!-- 更新後的社交連結 -->
+                <a href="https://www.instagram.com/abnormal_team_?igsh=bmd0dGFwOGM2dzJ3" target="_blank"
+                    rel="noopener noreferrer" class="text-white hover:text-cyan-400 transition-colors">Instagram:</a>
+                <a href="https://www.instagram.com/abnormal_team_?igsh=bmd0dGFwOGM2dzJ3" target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-white hover:text-cyan-400 transition-colors">Abnormal_team_</a>
+            </div>
+            <div class="text-sm text-gray-500 font-bold uppercase tracking-widest">
+                &copy; 2025 ABNORMAL . LIVE LIFE IN A WILD DAY.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 手機版選單邏輯
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+
+        // 發掘更多異常 - 邏輯
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        const hiddenProducts = document.querySelectorAll('.hidden-product');
+        const loadMoreContainer = document.getElementById('load-more-container');
+
+        loadMoreBtn.addEventListener('click', function () {
+            // 模擬載入動畫
+            this.innerText = "載入中...";
+            this.style.opacity = "0.5";
+            this.style.pointerEvents = "none";
+
+            setTimeout(() => {
+                hiddenProducts.forEach((product, index) => {
+                    product.classList.remove('hidden');
+                    product.classList.add('fade-in-up');
+                    // 增加一點點延遲感，讓產品一個接一個出現
+                    product.style.animationDelay = `${index * 0.15}s`;
+                });
+
+                // 載入完成後隱藏按鈕容器
+                loadMoreContainer.style.display = 'none';
+
+                // 平滑捲動到新產品位置
+                const firstNewProduct = hiddenProducts[0];
+                firstNewProduct.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 800);
+        });
+    </script>
+</body>
+
+</html>
